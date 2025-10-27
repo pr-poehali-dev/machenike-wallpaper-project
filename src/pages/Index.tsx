@@ -1,14 +1,65 @@
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
+
+interface Wallpaper {
+  id: number;
+  url: string;
+  title: string;
+  colorScheme: string;
+  colors: string[];
+}
 
 const Index = () => {
-  const handleDownload = () => {
+  const wallpapers: Wallpaper[] = [
+    {
+      id: 1,
+      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/95cc25a5-5013-4cb2-bc6c-470f8ea0872a.jpg',
+      title: 'CYAN PULSE',
+      colorScheme: 'Неоновый циан и пурпур',
+      colors: ['#00F0FF', '#9b87f5']
+    },
+    {
+      id: 2,
+      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/a2273e0e-7f20-4677-8765-10577041ed81.jpg',
+      title: 'FIRE CORE',
+      colorScheme: 'Красный и оранжевый',
+      colors: ['#FF4500', '#FF6347']
+    },
+    {
+      id: 3,
+      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/cc43eb1c-ff26-490c-acb1-80e3ad321f51.jpg',
+      title: 'MATRIX CODE',
+      colorScheme: 'Зелёный и жёлтый',
+      colors: ['#00FF41', '#FFFF00']
+    },
+    {
+      id: 4,
+      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/e462cad9-dbcb-41be-9c60-e5c06860d3da.jpg',
+      title: 'VAPORWAVE',
+      colorScheme: 'Розовый и фиолетовый',
+      colors: ['#FF1493', '#8B00FF']
+    }
+  ];
+
+  const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper>(wallpapers[0]);
+  const [glitchActive, setGlitchActive] = useState(false);
+
+  const handleDownload = (url: string, title: string) => {
     const link = document.createElement('a');
-    link.href = 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/95cc25a5-5013-4cb2-bc6c-470f8ea0872a.jpg';
-    link.download = 'machenike-cyberpunk-wallpaper-2560x1440.jpg';
+    link.href = url;
+    link.download = `machenike-${title.toLowerCase().replace(' ', '-')}-2560x1440.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleWallpaperSelect = (wallpaper: Wallpaper) => {
+    setGlitchActive(true);
+    setTimeout(() => {
+      setSelectedWallpaper(wallpaper);
+      setGlitchActive(false);
+    }, 200);
   };
 
   return (
@@ -18,30 +69,38 @@ const Index = () => {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      <div className="relative z-10 max-w-6xl w-full">
+      <div className="relative z-10 max-w-7xl w-full">
         <div className="text-center mb-8 animate-fade-in">
-          <h1 className="font-cyber text-6xl md:text-8xl font-black text-neon-cyan mb-4 tracking-wider">
+          <h1 
+            className={`font-cyber text-5xl md:text-8xl font-black text-neon-cyan mb-4 tracking-wider transition-all duration-200 ${glitchActive ? 'blur-sm scale-95' : ''}`}
+            onMouseEnter={() => setGlitchActive(true)}
+            onMouseLeave={() => setGlitchActive(false)}
+          >
             MACHENIKE
           </h1>
           <p className="text-neon-purple text-xl md:text-2xl font-light tracking-widest">
-            CYBERPUNK EDITION
+            CYBERPUNK WALLPAPER COLLECTION
           </p>
         </div>
 
-        <div className="relative group mb-12 animate-scale-in" style={{ animationDelay: '0.2s' }}>
+        <div className="relative group mb-8 animate-scale-in" style={{ animationDelay: '0.2s' }}>
           <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
           <div className="relative">
             <img 
-              src="https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/95cc25a5-5013-4cb2-bc6c-470f8ea0872a.jpg"
-              alt="Machenike Cyberpunk Wallpaper"
-              className="w-full h-auto rounded-lg shadow-2xl border-2 border-primary/50"
+              src={selectedWallpaper.url}
+              alt={`Machenike ${selectedWallpaper.title} Wallpaper`}
+              className={`w-full h-auto rounded-lg shadow-2xl border-2 border-primary/50 transition-all duration-300 ${glitchActive ? 'opacity-50' : 'opacity-100'}`}
             />
+            <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-primary/50">
+              <p className="font-cyber text-primary text-sm">{selectedWallpaper.title}</p>
+              <p className="text-foreground/70 text-xs">{selectedWallpaper.colorScheme}</p>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
           <Button 
-            onClick={handleDownload}
+            onClick={() => handleDownload(selectedWallpaper.url, selectedWallpaper.title)}
             size="lg"
             className="bg-primary hover:bg-primary/90 text-background font-cyber text-lg px-8 py-6 rounded-lg shadow-lg shadow-primary/50 hover:shadow-primary/80 transition-all duration-300 hover:scale-105 group"
           >
@@ -55,18 +114,56 @@ const Index = () => {
               <span>2560×1440</span>
             </div>
             <div className="flex items-center gap-2 font-cyber">
-              <Icon name="Zap" size={20} className="text-accent" />
-              <span>CYBERPUNK</span>
+              <Icon name="Palette" size={20} className="text-accent" />
+              <span>4 ВАРИАНТА</span>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 text-center text-foreground/50 text-sm font-cyber animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <p className="flex items-center justify-center gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          {wallpapers.map((wallpaper) => (
+            <div
+              key={wallpaper.id}
+              onClick={() => handleWallpaperSelect(wallpaper)}
+              className={`relative group cursor-pointer rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 ${
+                selectedWallpaper.id === wallpaper.id 
+                  ? 'ring-2 ring-primary shadow-lg shadow-primary/50' 
+                  : 'ring-1 ring-foreground/20'
+              }`}
+            >
+              <img 
+                src={wallpaper.url}
+                alt={wallpaper.title}
+                className="w-full h-32 object-cover transition-all duration-300 group-hover:brightness-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent flex flex-col justify-end p-2">
+                <p className="font-cyber text-xs text-primary">{wallpaper.title}</p>
+                <div className="flex gap-1 mt-1">
+                  {wallpaper.colors.map((color, idx) => (
+                    <div 
+                      key={idx}
+                      className="w-4 h-4 rounded-full border border-foreground/30"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+              </div>
+              {selectedWallpaper.id === wallpaper.id && (
+                <div className="absolute top-2 right-2 bg-primary text-background rounded-full p-1">
+                  <Icon name="Check" size={12} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center text-foreground/50 text-sm font-cyber animate-fade-in" style={{ animationDelay: '0.8s' }}>
+          <p className="flex items-center justify-center gap-2 mb-2">
             <Icon name="Sparkles" size={16} className="text-primary" />
             DESIGNED FOR GAMING DOMINANCE
             <Icon name="Sparkles" size={16} className="text-accent" />
           </p>
+          <p className="text-xs">Кликни на превью, чтобы выбрать вариант</p>
         </div>
       </div>
 
