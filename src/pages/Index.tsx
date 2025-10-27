@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
+import JSZip from "jszip";
+import { useToast } from "@/hooks/use-toast";
 
 interface Wallpaper {
   id: number;
@@ -44,6 +46,8 @@ const Index = () => {
 
   const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper>(wallpapers[0]);
   const [glitchActive, setGlitchActive] = useState(false);
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const { toast } = useToast();
 
   const handleDownload = (url: string, title: string) => {
     const link = document.createElement('a');
@@ -60,6 +64,47 @@ const Index = () => {
       setSelectedWallpaper(wallpaper);
       setGlitchActive(false);
     }, 200);
+  };
+
+  const handleDownloadAll = async () => {
+    setIsDownloadingAll(true);
+    toast({
+      title: "Подготовка архива",
+      description: "Загружаем все обои...",
+    });
+
+    try {
+      const zip = new JSZip();
+      
+      for (const wallpaper of wallpapers) {
+        const response = await fetch(wallpaper.url);
+        const blob = await response.blob();
+        const filename = `machenike-${wallpaper.title.toLowerCase().replace(' ', '-')}-2560x1440.jpg`;
+        zip.file(filename, blob);
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = 'machenike-cyberpunk-wallpapers.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+
+      toast({
+        title: "Готово!",
+        description: "Все обои скачаны в архиве",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось создать архив",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDownloadingAll(false);
+    }
   };
 
   return (
@@ -98,15 +143,27 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <Button 
-            onClick={() => handleDownload(selectedWallpaper.url, selectedWallpaper.title)}
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-background font-cyber text-lg px-8 py-6 rounded-lg shadow-lg shadow-primary/50 hover:shadow-primary/80 transition-all duration-300 hover:scale-105 group"
-          >
-            <Icon name="Download" size={24} className="mr-2 group-hover:animate-bounce" />
-            СКАЧАТЬ 2560×1440
-          </Button>
+        <div className="flex flex-col gap-4 items-center mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button 
+              onClick={() => handleDownload(selectedWallpaper.url, selectedWallpaper.title)}
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-background font-cyber text-lg px-8 py-6 rounded-lg shadow-lg shadow-primary/50 hover:shadow-primary/80 transition-all duration-300 hover:scale-105 group"
+            >
+              <Icon name="Download" size={24} className="mr-2 group-hover:animate-bounce" />
+              СКАЧАТЬ 2560×1440
+            </Button>
+            
+            <Button 
+              onClick={handleDownloadAll}
+              disabled={isDownloadingAll}
+              size="lg"
+              className="bg-accent hover:bg-accent/90 text-background font-cyber text-lg px-8 py-6 rounded-lg shadow-lg shadow-accent/50 hover:shadow-accent/80 transition-all duration-300 hover:scale-105 group"
+            >
+              <Icon name={isDownloadingAll ? "Loader2" : "Package"} size={24} className={`mr-2 ${isDownloadingAll ? 'animate-spin' : 'group-hover:animate-pulse'}`} />
+              {isDownloadingAll ? 'ЗАГРУЗКА...' : 'ВСЕ В АРХИВЕ'}
+            </Button>
+          </div>
           
           <div className="flex gap-4 text-foreground/70">
             <div className="flex items-center gap-2 font-cyber">
