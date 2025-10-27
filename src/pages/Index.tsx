@@ -16,24 +16,24 @@ const Index = () => {
   const wallpapers: Wallpaper[] = [
     {
       id: 1,
-      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/95cc25a5-5013-4cb2-bc6c-470f8ea0872a.jpg',
-      title: 'CYAN PULSE',
-      colorScheme: 'Неоновый циан и пурпур',
-      colors: ['#00F0FF', '#9b87f5']
+      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/fa9e422c-50e3-413d-ae62-25420e704de9.jpg',
+      title: 'NEON CIRCUIT',
+      colorScheme: 'Неоновый пурпур и циан',
+      colors: ['#9b87f5', '#00F0FF']
     },
     {
       id: 2,
-      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/a2273e0e-7f20-4677-8765-10577041ed81.jpg',
-      title: 'FIRE CORE',
-      colorScheme: 'Красный и оранжевый',
-      colors: ['#FF4500', '#FF6347']
+      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/dbd811b4-03ed-4727-8a0f-8201bebe456e.jpg',
+      title: 'ELECTRIC GRID',
+      colorScheme: 'Электрический синий и маджента',
+      colors: ['#0099FF', '#FF00FF']
     },
     {
       id: 3,
-      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/cc43eb1c-ff26-490c-acb1-80e3ad321f51.jpg',
-      title: 'MATRIX CODE',
-      colorScheme: 'Зелёный и жёлтый',
-      colors: ['#00FF41', '#FFFF00']
+      url: 'https://cdn.poehali.dev/projects/065971fa-d3de-48df-8ddc-c3d533bd4b99/files/92d925f6-c28d-48c8-a1b4-28d0f0aebf62.jpg',
+      title: 'MATRIX GLOW',
+      colorScheme: 'Фиолетовый и бирюзовый',
+      colors: ['#8B00FF', '#00FFCC']
     },
     {
       id: 4,
